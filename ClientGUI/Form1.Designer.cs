@@ -40,6 +40,7 @@
             displayBox.Multiline = true;
             displayBox.Name = "displayBox";
             displayBox.ReadOnly = true;
+            displayBox.ScrollBars = ScrollBars.Vertical;
             displayBox.Size = new Size(428, 266);
             displayBox.TabIndex = 0;
             // 

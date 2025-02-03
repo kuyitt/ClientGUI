@@ -29,6 +29,7 @@ namespace ClientGUI
             nameBytes = Encoding.UTF8.GetBytes(name);
 
             stream.Write(nameBytes, 0, nameBytes.Length);
+            backgroundWorker1.RunWorkerAsync();
 
         }
 
@@ -43,6 +44,27 @@ namespace ClientGUI
             byte[] msgBytes = new byte[bufferSize];
             msgBytes = Encoding.UTF8.GetBytes(msg);
             stream.Write(msgBytes, 0, msgBytes.Length);
+        }
+        private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        {
+            Interaction.MsgBox("scanning");
+            while (true)
+            {
+                int msgLength = client.Available;
+
+                if (msgLength > 0)
+                {
+                    byte[] msgBytes = new byte[msgLength];
+                    string msg = string.Empty;
+
+                    client.GetStream().Read(msgBytes, 0, msgBytes.Length);
+                    msg = Encoding.UTF8.GetString(msgBytes);
+                    Interaction.MsgBox(msg);
+                    Invoke(new Action(() => displayBox.AppendText(msg + Environment.NewLine)));
+
+                    Thread.Sleep(100);
+                }
+            }
         }
     }
 }
