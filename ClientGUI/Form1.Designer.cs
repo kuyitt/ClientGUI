@@ -34,6 +34,10 @@
             send = new Button();
             SuspendLayout();
             // 
+            // backgroundWorker1
+            // 
+            backgroundWorker1.DoWork += backgroundWorker1_DoWork;
+            // 
             // displayBox
             // 
             displayBox.Location = new Point(12, 12);

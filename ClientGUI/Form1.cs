@@ -25,12 +25,12 @@ namespace ClientGUI
             client = new TcpClient(hostName, port);
             stream = client.GetStream();
 
-            byte[] nameBytes = new byte[bufferSize];
-            nameBytes = Encoding.UTF8.GetBytes(name);
+            _SendMessage(name);
+            //byte[] nameBytes = new byte[bufferSize];
+            //nameBytes = Encoding.UTF8.GetBytes(name);
 
-            stream.Write(nameBytes, 0, nameBytes.Length);
+            //stream.Write(nameBytes, 0, nameBytes.Length);
             backgroundWorker1.RunWorkerAsync();
-
         }
 
         private void send_Click(object sender, EventArgs e)
@@ -45,26 +45,50 @@ namespace ClientGUI
             msgBytes = Encoding.UTF8.GetBytes(msg);
             stream.Write(msgBytes, 0, msgBytes.Length);
         }
+
         private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
         {
-            Interaction.MsgBox("scanning");
             while (true)
             {
                 int msgLength = client.Available;
 
                 if (msgLength > 0)
                 {
-                    byte[] msgBytes = new byte[msgLength];
-                    string msg = string.Empty;
+                    while (msgLength > 0)
+                    {
+                        byte[] msgBytes = new byte[1024];
+                        string msg = string.Empty;
 
-                    client.GetStream().Read(msgBytes, 0, msgBytes.Length);
-                    msg = Encoding.UTF8.GetString(msgBytes);
-                    Interaction.MsgBox(msg);
-                    Invoke(new Action(() => displayBox.AppendText(msg + Environment.NewLine)));
+                        client.GetStream().Read(msgBytes, 0, msgBytes.Length);
+                        msg = Encoding.UTF8.GetString(msgBytes).Trim();
+                        Invoke(new Action(() => displayBox.AppendText(msg)));
 
-                    Thread.Sleep(100);
+                        Thread.Sleep(100);
+                    }
                 }
             }
         }
+        //private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
+        //{
+        //    Interaction.MsgBox("scanning");
+        //    while (true)
+        //    {
+        //        int msgLength = client.Available;
+
+        //        if (msgLength > 0)
+        //        {
+        //            byte[] msgBytes = new byte[msgLength];
+        //            string msg = string.Empty;
+
+        //            client.GetStream().Read(msgBytes, 0, msgBytes.Length);
+        //            msg = Encoding.UTF8.GetString(msgBytes);
+        //            Interaction.MsgBox(msg);
+        //            Invoke(new Action(() => displayBox.AppendText(msg + Environment.NewLine)));
+
+        //            Thread.Sleep(100);
+        //        }
+        //    }
+        //}
+
     }
 }
