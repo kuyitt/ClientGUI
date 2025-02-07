@@ -10,7 +10,7 @@ namespace ClientGUI
         int port = 16000;
         int bufferSize = 1024;
         TcpClient client;
-        NetworkStream stream;
+        private NetworkStream stream = null;
         public Form1()
         {
             InitializeComponent();
@@ -51,44 +51,31 @@ namespace ClientGUI
             while (true)
             {
                 int msgLength = client.Available;
+                int bytesRead = 0;
 
                 if (msgLength > 0)
                 {
-                    while (msgLength > 0)
-                    {
-                        byte[] msgBytes = new byte[1024];
-                        string msg = string.Empty;
+                    byte[] msgBytes = new byte[msgLength];
+                    string msg = string.Empty;
 
-                        client.GetStream().Read(msgBytes, 0, msgBytes.Length);
-                        msg = Encoding.UTF8.GetString(msgBytes).Trim();
-                        Invoke(new Action(() => displayBox.AppendText(msg)));
+                    stream.Read(msgBytes, 0, msgBytes.Length);
+                    msg = Encoding.UTF8.GetString(msgBytes);
+                    msg = _cleanMessage(msg);
 
-                        Thread.Sleep(100);
-                    }
+                    Invoke(new Action(() => displayBox.AppendText(msg + Environment.NewLine)));
                 }
             }
         }
-        //private void backgroundWorker1_DoWork(object sender, System.ComponentModel.DoWorkEventArgs e)
-        //{
-        //    Interaction.MsgBox("scanning");
-        //    while (true)
-        //    {
-        //        int msgLength = client.Available;
+        private string _cleanMessage(string msg)
+        {
+            string cleanMsg;
+            cleanMsg = msg.Replace("\0", string.Empty);
+            return cleanMsg;
+        }
 
-        //        if (msgLength > 0)
-        //        {
-        //            byte[] msgBytes = new byte[msgLength];
-        //            string msg = string.Empty;
+        private void formatBox_TextChanged(object sender, EventArgs e)
+        {
 
-        //            client.GetStream().Read(msgBytes, 0, msgBytes.Length);
-        //            msg = Encoding.UTF8.GetString(msgBytes);
-        //            Interaction.MsgBox(msg);
-        //            Invoke(new Action(() => displayBox.AppendText(msg + Environment.NewLine)));
-
-        //            Thread.Sleep(100);
-        //        }
-        //    }
-        //}
-
+        }
     }
 }

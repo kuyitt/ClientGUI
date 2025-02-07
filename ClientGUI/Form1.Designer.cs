@@ -54,6 +54,7 @@
             formatBox.Name = "formatBox";
             formatBox.Size = new Size(368, 23);
             formatBox.TabIndex = 1;
+            formatBox.TextChanged += formatBox_TextChanged;
             // 
             // send
             // 
